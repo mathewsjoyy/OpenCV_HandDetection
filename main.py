@@ -12,6 +12,9 @@ hands = mpHands.Hands()
 # Helps to draw all points on the hand (WRIST, MIDDLE_FINGER_DIP, THUMB_TIP, etc...)
 mpDraw = mp.solutions.drawing_utils
 
+prevTime = 0
+currTime = 0
+
 # Code to run webcam (and more)
 while True:
     success, img = cap.read()
@@ -23,9 +26,25 @@ while True:
     # Checks hand(s) have actually been detected by the camera
     if results.multi_hand_landmarks:
         for handLandmark in results.multi_hand_landmarks: # Loop through all hands and draw out 21 landmark points
+            for id, landMark in enumerate(handLandmark.landmark): # id is the landmark index e.g 0 = wrist and landMark is x,y,z values
+                height, width, channel = img.shape
+                channelX, channelY = int(landMark.x * width), int(landMark.y * height)
+                
+                #if id == 8:  # Now we can can do things, like identify certain points e.g my pointer finger
+                    #cv2.circle(img, (channelX, channelY), 10, (225,0,225), cv2.FILLED)
+            
             mpDraw.draw_landmarks(img, handLandmark, mpHands.HAND_CONNECTIONS)
-        
+    
+    # fps counter
+    currTime = time.time()
+    fps = 1/(currTime - prevTime)
+    prevTime = currTime
+    
+    # Display counter and set location, font, size, colour and thickness
+    cv2.putText(img,str(int(fps)), (10,23), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255,0,255), 1)
     
     cv2.imshow("Image", img)
     cv2.waitKey(1)
+    
+
 
