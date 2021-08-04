@@ -1,6 +1,6 @@
 """
 ======================================================================================
-This basically is just HandTracking.py but made into a python module for reuse in any
+This is just additionals/HandTracking.py but made into a python module for reuse in any
 future projects.
 """
 
