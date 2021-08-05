@@ -40,6 +40,7 @@ volRange = volume.GetVolumeRange()
 minVolRange = volRange[0]
 maxVolRange = volRange[1]
 
+counter = 0 # Muting tracker
 
 while True:
     success, img = cap.read()
@@ -67,8 +68,16 @@ while True:
         
         if length <= 25: # Smallest volume point e.g 0 volume
             cv2.circle(img, (cx, cy), 7, (0, 255, 0), cv2.FILLED)
+            counter+=1
+            if counter == 50: # Roughly a 4 second delay before muting
+                volume.SetMute(1, None)
         elif length >= 250: # Largest volume point e.g 100 volume
             cv2.circle(img, (cx, cy), 7, (0, 0 , 255), cv2.FILLED)
+        if detector.results.multi_hand_landmarks is not None: # Detects if there is 2 hands present
+            if len(detector.results.multi_hand_landmarks) == 2:
+                counter = 0
+                volume.SetMute(0, None)
+        
         
         # Hand range 20 - 250 & Volume Range -96 - 0
         # This code helps convert our hand range to vol range so its universal

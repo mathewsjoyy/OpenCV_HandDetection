@@ -22,6 +22,7 @@ class HandDetector():
         self.hands = self.mpHands.Hands(self.mode, self.maxHands, self.minDetectionConfidence, self.minTrackingConfidence)
         # Helps to draw all points on the hand (WRIST, MIDDLE_FINGER_DIP, THUMB_TIP, etc...)
         self.mpDraw = mp.solutions.drawing_utils
+        self.results = None
 
     # Finds hand(s) and draws it
     def findHands(self, img, draw=True):
