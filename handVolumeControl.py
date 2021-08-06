@@ -4,7 +4,6 @@ Python 3.9.0
 """
 
 # Import necessary libraries
-from tkinter.constants import BOTH, CENTER
 import HandTrackingModule as htm
 import mediapipe as mp
 import cv2
@@ -14,6 +13,7 @@ import math
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+import keyboard
             
 
 class HandVolumeController():
@@ -36,6 +36,7 @@ class HandVolumeController():
         # Fps counter vars
         self.prevTime = 0
         self.currTime = 0
+        self.showFps = False
 
         # General code to access device speakers and be able to control volume
         self.devices = AudioUtilities.GetSpeakers()
@@ -46,7 +47,17 @@ class HandVolumeController():
         self.volRange = self.volume.GetVolumeRange()
         self.minVolRange = self.volRange[0]
         self.maxVolRange =  self.volRange[1]
-
+        
+    # Check for keyboard input
+    def check_keyboard_input(self):
+        if keyboard.is_pressed("x"):
+            return False
+        elif keyboard.is_pressed("p"):
+            self.showFps = True
+            return True
+        elif keyboard.is_pressed("o"):
+            self.showFps = False
+            return True
 
     def handDetection(self):
         
@@ -57,6 +68,11 @@ class HandVolumeController():
             
             img = self.detector.findHands(img)
             landMarkList = self.detector.findPosition(img, draw=False)
+            
+            # Check user wants to close the camera
+            if self.check_keyboard_input() == False:
+                cv2.destroyAllWindows()
+                return
             
             if len(landMarkList) != 0:
                 #print(landMarkList[4], landMarkList[8])
@@ -104,24 +120,22 @@ class HandVolumeController():
                 percentageVol = np.interp(length, [25, 250], [0, 100])
                 cv2.putText(img, f"{int(percentageVol)}%", (50, 420), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255,0,255), 1)
             
-
-            # fps counter
-            self.currTime = time.time()
-            fps = 1/(self.currTime - self.prevTime)
-            self.prevTime = self.currTime
-            
-            # Display counter and set location, font, size, colour and thickness
-            cv2.putText(img, f"Frames Per Second (fps): {int(fps)}", (10,23), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255,0,255), 1)
+            if self.showFps:
+                # fps counter
+                self.currTime = time.time()
+                fps = 1/(self.currTime - self.prevTime)
+                self.prevTime = self.currTime
+                
+                # Display counter and set location, font, size, colour and thickness
+                cv2.putText(img, f"Frames Per Second (fps): {int(fps)}", (10,23), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255,0,255), 1)
+                
             cv2.imshow("Hand Volume Controller", img)
             cv2.waitKey(1) # 1 millisecond delay
-    
-    
-            
+        
+
+     
 # Call the main functionality 
 if __name__ == "__main__":
     app = HandVolumeController()
     app.handDetection()
-    
-
-    
-
+    exit(0)
