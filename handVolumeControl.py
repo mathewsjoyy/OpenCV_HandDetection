@@ -45,9 +45,10 @@ class App():
     
     # Method to run the tkinter main   
     def run_app(self):
-        # Start the hand detection automatically
+        # Start the hand detection
         self.__startDetection()
         self.window.mainloop() # Keep window open
+        return
             
 
 class HandVolumeController():
@@ -58,8 +59,11 @@ class HandVolumeController():
         if not self.cap.isOpened():
             raise ValueError(f"> Unable to open your current video source {video_source}\n> Please try another")
         
-        self.CAM_WIDTH = self.cap.get(cv2.CAP_PROP_FRAME_WIDTH)
-        self.CAM_HEIGHT = self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        # Set the size of the cam
+        CAM_WIDTH, CAM_HEIGHT = 640, 480
+        self.cap.set(3, CAM_WIDTH)
+        self.cap.set(4, CAM_HEIGHT)
+
         
         # We will change default of detection confidence to 0.7 to reduce flickering,
         # by ensuring the object we are looking hand is actually a hand
