@@ -4,6 +4,7 @@ Python 3.9.0
 """
 
 # Import necessary libraries
+from tkinter.constants import BOTH, CENTER
 import HandTrackingModule as htm
 import mediapipe as mp
 import cv2
@@ -13,42 +14,6 @@ import math
 from ctypes import cast, POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
-from tkinter import *
-from playsound import playsound
-
-
-class App():
-    def __init__(self, video_source=0):
-        # Initialize tkinter gui attributes
-        self.appName = "Hand Volume Controller"
-        self.window = Tk()
-        self.window.title(self.appName)
-        self.window.resizable(0,0) # Setting window to not resizeable
-        self.window.wm_iconbitmap("images-sounds/hand_icon.ico")
-        self.window["bg"] = 'black'
-        self.click_sound = "images-sounds/clicks.wav"
-        
-        self.vid = HandVolumeController(video_source)
-        
-        self.label = Label(self.window, text=self.appName, font=14, bg="blue", fg="white",).pack(side=TOP,fill=BOTH)
-        
-        # Button that lets user to see fps
-        self.btn_fps = Button(self.window, text="Frames Per Second tracker", width=30, bg="goldenrod2", activebackground="red", command=self.__fps_tracker)
-        self.btn_fps.pack(anchor=CENTER, expand=True)
-    
-    def __fps_tracker(self):
-        playsound(self.click_sound)
-        pass
-    
-    def __startDetection(self):
-        self.vid.handDetection()
-    
-    # Method to run the tkinter main   
-    def run_app(self):
-        # Start the hand detection
-        self.__startDetection()
-        self.window.mainloop() # Keep window open
-        return
             
 
 class HandVolumeController():
@@ -64,7 +29,6 @@ class HandVolumeController():
         self.cap.set(3, CAM_WIDTH)
         self.cap.set(4, CAM_HEIGHT)
 
-        
         # We will change default of detection confidence to 0.7 to reduce flickering,
         # by ensuring the object we are looking hand is actually a hand
         self.detector = htm.HandDetector(minDetectionConfidence=0.7)
@@ -148,16 +112,16 @@ class HandVolumeController():
             
             # Display counter and set location, font, size, colour and thickness
             cv2.putText(img, f"Frames Per Second (fps): {int(fps)}", (10,23), cv2.FONT_HERSHEY_DUPLEX, 0.5, (255,0,255), 1)
-            cv2.imshow("img", img)
+            cv2.imshow("Hand Volume Controller", img)
             cv2.waitKey(1) # 1 millisecond delay
     
     
-
+            
+# Call the main functionality 
 if __name__ == "__main__":
-    app = App()
-    app.run_app() 
+    app = HandVolumeController()
+    app.handDetection()
     
 
     
-
 
