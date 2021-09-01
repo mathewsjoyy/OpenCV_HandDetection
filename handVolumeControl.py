@@ -6,7 +6,6 @@ Python 3.9.0
 
 # Import necessary libraries
 import HandTrackingModule as htm
-import mediapipe as mp
 import cv2
 import time
 import numpy as np
@@ -25,7 +24,7 @@ class HandVolumeController():
         if not self.cap.isOpened():
             raise ValueError(f"> Unable to open your current video source {video_source}\n> Please try another")
         
-        # Set the size of the cam
+        # Set the size of the cam (as we don't want it to change)
         CAM_WIDTH, CAM_HEIGHT = 640, 480
         self.cap.set(3, CAM_WIDTH)
         self.cap.set(4, CAM_HEIGHT)
@@ -49,6 +48,7 @@ class HandVolumeController():
         self.minVolRange = self.volRange[0]
         self.maxVolRange =  self.volRange[1]
         
+        
     # Check for keyboard input
     def check_keyboard_input(self):
         if keyboard.is_pressed("x"):
@@ -59,6 +59,7 @@ class HandVolumeController():
         elif keyboard.is_pressed("o"):
             self.showFps = False
             return True
+
 
     def handDetection(self):
         
@@ -134,9 +135,8 @@ class HandVolumeController():
             cv2.waitKey(1) # 1 millisecond delay
         
 
-     
-# Call the main functionality 
 if __name__ == "__main__":
     app = HandVolumeController()
     app.handDetection()
     exit(0)
+    

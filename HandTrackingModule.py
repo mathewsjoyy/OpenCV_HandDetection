@@ -6,7 +6,6 @@ future projects.
 
 import cv2
 import mediapipe as mp # A google made package for ready-to-use ML pipelines
-import time
 
 
 class HandDetector():
