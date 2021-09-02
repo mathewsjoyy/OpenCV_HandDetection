@@ -133,10 +133,3 @@ class HandVolumeController():
                 
             cv2.imshow("Hand Volume Controller", img)
             cv2.waitKey(1) # 1 millisecond delay
-        
-
-if __name__ == "__main__":
-    app = HandVolumeController()
-    app.handDetection()
-    exit(0)
-    
